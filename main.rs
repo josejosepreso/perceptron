@@ -1,122 +1,15 @@
-use std::fs;
+mod perceptron;
+mod letter;
 
-fn print(letter: Vec<Vec<i8>>) {
-    for i in letter {
-	for j in i {
-	    if j == 1 {
-		print!("#");
-		continue;
-	    }	    
-	    print!(".");
-	}
-	println!("");
-    }
-}
-
-fn read_csv(path: &str) -> Vec<Vec<i8>> {
-    fs::read_to_string(path)
-	.unwrap()
-	.lines()
-	.map(|line| line
-	     .split(",")
-	     .map(|digit| digit
-		  .parse::<i8>()
-		  .unwrap()
-	     )
-	     .collect::<Vec<_>>()
-	)
-	.collect::<Vec<_>>()
-}
-
-struct Perceptron {
-    bias: Vec<i8>,
-    learning_rate: i8,
-    threshold: i8,
-    weights: Vec<Vec<i8>>
-}
-
-impl Perceptron {
-    fn new() -> Self {
-        return Self {
-            bias: Vec::new(),
-            learning_rate: 1,
-            threshold: 0,
-	    weights: Vec::new()
-        };
-    }
-
-    fn activate(&self, x: i8) -> i8 {
-        match x {
-            a if a > 0 => 1,
-	    a if a >= -self.threshold && a <= self.threshold => 0,
-	    _ => -1,
-        }
-    }
-
-    fn dot(&self, u: &Vec<i8>, v: &Vec<i8>) -> i8 {
-	u.into_iter()
-            .zip(v.iter())
-            .map(|(a, b)| a * b)
-            .sum::<_>()
-    }
-
-    fn predict(&self, inputs: &Vec<i8>) -> Vec<i8> {
-	(0 .. self.bias.len())
-	    .map(|i| {
-		self.activate(
-		    self.bias[i] + self.dot(inputs, &self.weights[i])
-		)
-	    })
-	    .collect::<Vec<_>>()
-    }
-
-    fn train(&mut self, training_input: Vec<Vec<i8>>, targets: Vec<Vec<i8>>) -> usize {
-	self.bias = targets[0]
-	    .iter()
-	    .map(|_| 0)
-	    .collect::<Vec<_>>();
-	
-	self.weights = self.bias
-	    .iter()
-	    .map(|_| {
-		training_input[0]
-		    .iter()
-		    .map(|_| 0)
-		    .collect::<Vec<_>>()
-	    })
-	    .collect::<Vec<_>>();
-
-	let mut epochs: usize = 0;
-	let mut w: Vec<i8>;
-	let mut y_in: Vec<i8>;
-
-	for i in 0 .. self.bias.len() {
-	    loop {
-		w = self.weights[i].clone();
-		for (current_input, current_target) in training_input.iter().zip(targets.clone()) {
-		    epochs += 1;
-		    y_in = self.predict(&current_input);
-
-		    if y_in[i] != current_target[i] {
-			for (j, x) in current_input.iter().enumerate() {
-			    self.weights[i][j] += self.learning_rate * current_target[i] * x;
-			    self.bias[i] += self.learning_rate * current_target[i];
-			}
-		    }
-		}
-
-		if w == self.weights[i] {
-		    break;
-		}
-	    }
-	}
-	
-	return epochs;
-    }
-}
+use perceptron::perceptron::Perceptron;
+use letter::letter::read_csv;
+use letter::letter::print;
+use letter::letter::read_csv_letter;
+use letter::letter::flatten;
 
 fn main() {
-    let training_input = vec! [
+    /*
+   let training_input = vec! [
 	vec! [-1, 1, 1, -1, -1, -1, -1], // 1
 	vec! [1, 1, -1, 1, 1, -1, 1],    // 2
 	vec! [1, 1, 1, 1, -1, -1, 1],    // 3
@@ -143,16 +36,16 @@ fn main() {
     ];
 
     let mut perceptron = Perceptron::new();
+
     println!("Numero de epocas: {}", perceptron.train(training_input.clone(), targets));
 
     for a in training_input {
-	println!("Prediccion para {:?}: {:?}", a, perceptron.predict(&a));
-    }
-
-    /*
-    let mut csv_s: Vec<Vec<Vec<i8>>> = Vec::new();
-    for path in fs::read_dir("learning").unwrap() {
-	csv_s.push(
+	println!("Prediccion para {:?}: {:?}", a.clone(), perceptron.predict(&a));
+}*/
+    
+    let mut csv_s: Vec<(Vec<Vec<i16>>, Vec<i16>)> = Vec::new();
+    for path in std::fs::read_dir("learning").unwrap() {
+	csv_s.push(	    
 	    read_csv(&path
 		     .unwrap()
 		     .path()
@@ -160,7 +53,62 @@ fn main() {
 		     .to_string()
 	    )
 	);
-	println!("");
     }
-    */
+
+    let mut training_input: Vec<Vec<i16>> = Vec::new();
+    let mut targets: Vec<Vec<i16>> = Vec::new();
+
+    csv_s.iter().for_each(|(input, target)| {
+	training_input.push(input.clone().into_iter().flatten().collect());
+	targets.push(target.clone());
+    });
+    
+    let mut perceptron = Perceptron::new();
+
+    println!("Numero de epocas: {}", perceptron.train(training_input.clone(), targets));
+
+    /*
+    // TRAINING INPUTS
+    let mut result: Vec<i16>;
+    let mut prediction: (Vec<i16>, Vec<i16>);
+    for (a, _) in csv_s {
+	println!("Prediccion para");
+	print(a.clone());
+
+	result = perceptron.predict(&flatten(a));
+	prediction = (
+	    (0 .. 7).map(|i| result[i]).collect::<Vec<_>>(),
+	    (7 .. 10).map(|i| result[i]).collect::<Vec<_>>()
+	);
+
+	println!("{:?}\n", prediction);
+    }*/
+
+    /*
+    // TEST INPUTS
+    let mut letters: Vec<Vec<Vec<i16>>> = Vec::new();
+
+    for path in std::fs::read_dir("test").unwrap() {
+	letters.push(	    
+	    read_csv_letter(&path
+			    .unwrap()
+			    .path()
+			    .display()
+			    .to_string()
+	    )
+	);
+    }
+
+    for a in letters {
+	println!("Prediccion para");
+	print(a.clone());
+
+	result = perceptron.predict(&flatten(a));
+	prediction = (
+	    (0 .. 7).map(|i| result[i]).collect::<Vec<_>>(),
+	    (7 .. 10).map(|i| result[i]).collect::<Vec<_>>()
+	);
+
+	println!("{:?}\n", prediction);	
+    }*/
 }
