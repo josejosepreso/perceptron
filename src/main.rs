@@ -44,7 +44,7 @@ fn main() {
 }*/
     
     let mut csv_s: Vec<(Vec<Vec<i16>>, Vec<i16>)> = Vec::new();
-    for path in std::fs::read_dir("learning").unwrap() {
+    for path in std::fs::read_dir("src/learning").unwrap() {
 	csv_s.push(	    
 	    read_csv(&path
 		     .unwrap()
@@ -67,7 +67,6 @@ fn main() {
 
     println!("Numero de epocas: {}", perceptron.train(training_input.clone(), targets));
 
-    /*
     // TRAINING INPUTS
     let mut result: Vec<i16>;
     let mut prediction: (Vec<i16>, Vec<i16>);
@@ -82,13 +81,12 @@ fn main() {
 	);
 
 	println!("{:?}\n", prediction);
-    }*/
+    }
 
-    /*
     // TEST INPUTS
     let mut letters: Vec<Vec<Vec<i16>>> = Vec::new();
 
-    for path in std::fs::read_dir("test").unwrap() {
+    for path in std::fs::read_dir("src/test").unwrap() {
 	letters.push(	    
 	    read_csv_letter(&path
 			    .unwrap()
@@ -110,5 +108,5 @@ fn main() {
 	);
 
 	println!("{:?}\n", prediction);	
-    }*/
+    }
 }
