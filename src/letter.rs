@@ -1,5 +1,5 @@
 pub mod letter {
-    pub fn print(letter: Vec<Vec<i16>>) {
+    pub fn print(letter: &Vec<Vec<i16>>) {
 	letter.iter()
 	    .for_each(|v| {
 		v.iter()

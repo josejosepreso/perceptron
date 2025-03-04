@@ -1,8 +1,8 @@
 pub mod perceptron {
     pub struct Perceptron {
 	bias: Vec<f64>,
-	learning_rate: f64,
-	threshold: f64,
+	alpha: f64,
+	theta: f64,
 	pub weights: Vec<Vec<f64>>
     }
     
@@ -10,8 +10,8 @@ pub mod perceptron {
 	pub fn new() -> Self {
             return Self {
 		bias: Vec::new(),
-		learning_rate: rand::random(),
-		threshold: 0.0,
+		alpha: rand::random(),
+		theta: 0.0,
 		weights: Vec::new()
             };
 	}
@@ -19,7 +19,7 @@ pub mod perceptron {
 	fn activate(&self, x: f64) -> i16 {
             match x {
 		a if a > 0.0 => 1,
-		a if a >= -self.threshold && a <= self.threshold => 0,
+		a if a >= -self.theta && a <= self.theta => 0,
 		_ => -1,
             }
 	}
@@ -71,8 +71,8 @@ pub mod perceptron {
 			
 			if y_in[i] != current_target[i] {
 			    for (j, x) in current_input.iter().enumerate() {
-				self.weights[i][j] += self.learning_rate * f64::from(current_target[i]) * f64::from(*x);
-				self.bias[i] += self.learning_rate * f64::from(current_target[i]);
+				self.weights[i][j] += self.alpha * f64::from(current_target[i]) * f64::from(*x);
+				self.bias[i] += self.alpha * f64::from(current_target[i]);
 			    }
 			}
 		    }
