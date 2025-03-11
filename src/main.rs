@@ -8,6 +8,50 @@ use letter::letter::print;
 use letter::letter::read_csv_letter;
 use letter::letter::flatten;
 
+const LETTERS: &'static [&str] = &["A", "B", "C", "D", "E", "J", "K"];
+
+fn prediction_message(prediction: &Vec<Vec<i16>>, index: usize) -> String {
+    if index == 3 {
+	return String::from("No identificado");
+    }
+    
+    let letter_index = if let Some(index) = prediction[0].iter().position(|&n| n == 1) {
+	index as i32
+    } else {
+	-1
+    };
+    
+    let font_index = if let Some(index) = prediction[1].iter().position(|&n| n == 1) {
+	index as i32
+    } else {
+	-1
+    };
+
+    if letter_index == -1 {
+	return format!("Fuente {}", font_index + 1);
+    }
+
+    if font_index == -1 {
+	return format!("Letra {}", LETTERS[letter_index as usize]);
+    }
+
+    return format!("Letra {}, fuente {}", LETTERS[letter_index as usize], font_index + 1);   
+}
+
+fn check_result(letter: i16, font: i16) -> usize {
+    match letter + font {
+	-6 => match letter {
+	    -3 => 3,
+	    _ => 0
+	},
+	-8 => match letter {
+	    -7 => 2,
+	    _ => 1
+	},
+	_ => 3
+    }	
+}
+
 fn next(g: &Getch) {
     println!("Presionar Enter para continuar.");
     loop {
@@ -84,19 +128,25 @@ fn main() {
 
     let mut result: Vec<i16>;
     let mut prediction: Vec<Vec<i16>>;
+    let mut index: usize;
     
     // TRAINING INPUTS
     for (a, _) in csv_s {
 	println!("Prediccion para");
 	print(&a);
 
-	result = perceptron.predict(&flatten(a));
+	result = perceptron.predict(&flatten(a));	
 	prediction = vec! [
 	    (0 .. 7).map(|i| { result[i] }).collect::<Vec<_>>(),
 	    (7 .. 10).map(|i| { result[i] }).collect::<Vec<_>>()
 	];
 
-	println!("{:?}\n", prediction);
+	index = check_result(
+	    prediction[0].iter().sum::<_>(),
+	    prediction[1].iter().sum::<_>()
+	);
+
+	println!("{:?} -- {}\n", prediction, prediction_message(&prediction, index));
     }
 
     next(&g);
@@ -115,35 +165,29 @@ fn main() {
 	);
     }
 
-    let mut stats: Vec<i8> = vec! [0, 0, 0, 0, 0]; // 0: matched, 1: letter_matched, 2: font_matched, 3: not matched, 4: errors
-    let mut f: i16;
-    let mut l: i16;
+    let mut stats: Vec<i8> = vec! [0, 0, 0, 0]; // 0: matched, 1: letter_matched, 2: font_matched, 3: not matched
 
     for a in letters {
 	println!("Prediccion para");
 	print(&a);
 
-	result = perceptron.predict(&flatten(a));
-	
+	result = perceptron.predict(&flatten(a));	
 	prediction = vec! [
 	    (0 .. 7).map(|i| { result[i] }).collect::<Vec<_>>(),
 	    (7 .. 10).map(|i| { result[i] }).collect::<Vec<_>>()
 	];
 
-	l = prediction[0].iter().sum::<_>();
-	f = prediction[1].iter().sum::<_>();
-	match l + f {
-	    -8 => stats[0] += 1,
-	    -10 => stats[3] += 1,
-	    -9 => match f {
-		-7 => stats[2] += 1,
-		_ => stats[1] += 1
-	    },
-	    _ => stats[4] += 1
-	}
+	index = check_result(
+	    prediction[0].iter().sum::<_>(),
+	    prediction[1].iter().sum::<_>()
+	);
 
-	println!("{:?}\n", prediction);	
+	stats[index] += 1;
+
+	println!("{:?} -- {}\n", prediction, prediction_message(&prediction, index));
     }
 
-    print!("Fuente y letra identificada: {}\nSolo letra identificada: {}\nSolo fuente identificada: {}\nNo identificada: {}\nErrores: {}", stats[0], stats[1], stats[2], stats[3], stats[4]);
+    print!("Fuente y letra identificada: {}\nSolo letra identificada: {}\nSolo fuente identificada: {}\nNo identificada: {}\n",
+	   stats[0], stats[1], stats[2], stats[3]
+    );
 }

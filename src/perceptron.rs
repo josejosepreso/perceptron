@@ -60,7 +60,7 @@ pub mod perceptron {
 	    let mut epochs: usize = 0;
 	    let mut w: Vec<f64>;
 	    let mut y_in: Vec<i16>;
-	    
+
 	    for i in 0 .. self.bias.len() {
 		loop {
 		    w = self.weights[i].clone();
