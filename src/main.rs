@@ -1,7 +1,6 @@
 mod perceptron;
 mod letter;
 
-use getch_rs::{Getch, Key};
 use perceptron::perceptron::Perceptron;
 use letter::letter::read_csv;
 use letter::letter::print;
@@ -10,11 +9,7 @@ use letter::letter::flatten;
 
 const LETTERS: &'static [&str] = &["A", "B", "C", "D", "E", "J", "K"];
 
-fn prediction_message(prediction: &Vec<Vec<i16>>, index: usize) -> String {
-    if index == 3 {
-	return String::from("No identificado");
-    }
-    
+fn prediction_message(prediction: &Vec<Vec<i16>>) -> String {
     let letter_index = if let Some(index) = prediction[0].iter().position(|&n| n == 1) {
 	index as i32
     } else {
@@ -28,14 +23,23 @@ fn prediction_message(prediction: &Vec<Vec<i16>>, index: usize) -> String {
     };
 
     if letter_index == -1 {
-	return format!("Fuente {}", font_index + 1);
+	return format!("{:?} -- Fuente {}", prediction, font_index + 1);
     }
 
     if font_index == -1 {
-	return format!("Letra {}", LETTERS[letter_index as usize]);
+	return format!("{:?} -- Letra {}", prediction, LETTERS[letter_index as usize]);
     }
 
-    return format!("Letra {}, fuente {}", LETTERS[letter_index as usize], font_index + 1);   
+    return format!("{:?} -- Letra {}, fuente {}", prediction, LETTERS[letter_index as usize], font_index + 1);   
+}
+
+fn print_result(prediction: &Vec<Vec<i16>>, index: usize) -> () {
+    println!("{}\n",
+	     match index {
+		 3 => String::from("No identificado."),
+		 _ => prediction_message(prediction)
+	     }
+    );
 }
 
 fn check_result(letter: i16, font: i16) -> usize {
@@ -50,17 +54,6 @@ fn check_result(letter: i16, font: i16) -> usize {
 	},
 	_ => 3
     }	
-}
-
-fn next(g: &Getch) {
-    println!("Presionar Enter para continuar.");
-    loop {
-        match g.getch() {
-            Ok(Key::Char('\r')) => break,
-            Ok(_) => (),
-            Err(e) => println!("{}", e),
-        }
-    }
 }
 
 fn main() {
@@ -122,10 +115,6 @@ fn main() {
     let mut perceptron = Perceptron::new();
     println!("Modelo entrenado.\nNumero de epocas: {}", perceptron.train(training_input.clone(), targets));
 
-    let g = Getch::new();
-    
-    next(&g);
-
     let mut result: Vec<i16>;
     let mut prediction: Vec<Vec<i16>>;
     let mut index: usize;
@@ -146,10 +135,8 @@ fn main() {
 	    prediction[1].iter().sum::<_>()
 	);
 
-	println!("{:?} -- {}\n", prediction, prediction_message(&prediction, index));
+	print_result(&prediction, index);
     }
-
-    next(&g);
 
     // TEST INPUTS
     let mut letters: Vec<Vec<Vec<i16>>> = Vec::new();
@@ -184,7 +171,7 @@ fn main() {
 
 	stats[index] += 1;
 
-	println!("{:?} -- {}\n", prediction, prediction_message(&prediction, index));
+	print_result(&prediction, index);
     }
 
     print!("Fuente y letra identificada: {}\nSolo letra identificada: {}\nSolo fuente identificada: {}\nNo identificada: {}\n",
