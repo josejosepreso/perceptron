@@ -1,5 +1,5 @@
 pub mod letter {
-    pub fn print(letter: &Vec<Vec<i16>>) {
+    pub fn print(letter: &Vec<Vec<i16>>) -> () {
 	letter.iter()
 	    .for_each(|v| {
 		v.iter()
@@ -10,7 +10,7 @@ pub mod letter {
 			}
 		    });
 		println!();
-	    });
+	    })
     }
 
     pub fn flatten<T>(nested: Vec<Vec<T>>) -> Vec<T> {
@@ -32,12 +32,17 @@ pub mod letter {
     }
 
     pub fn read_csv(path: &str) -> (Vec<Vec<i16>>, Vec<i16>) {
-	let b = std::fs::read_to_string(path).unwrap();
-	let letter_target = b
-	    .split("\n\n")
-	    .collect::<Vec<_>>();
+	let s = if let Ok(content) = std::fs::read_to_string(path) {
+	    content
+	} else {
+	    String::new()
+	};
+
+	assert_ne!(s.len(), 0);
+
+	let letter_target = s.split("\n\n").collect::<Vec<_>>();
 	
-	return (
+	(
 	    letter_target[0]
 		.lines()
 		.map(|line| {
@@ -58,6 +63,6 @@ pub mod letter {
 			.unwrap()
 		})
 		.collect::<Vec<_>>()
-	);
+	)
     }
 }

@@ -1,5 +1,9 @@
 Modelo entrenado.
-Numero de epocas: 1911
+Numero de epocas: 1890
+
+==============================
+=== DATOS DE ENTRENAMIENTO ===
+==============================
 Prediccion para
 ...#...
 ...#...
@@ -130,7 +134,7 @@ Prediccion para
 .#...#.
 .#...#.
 ..###..
-[[-1, -1, -1, -1, -1, 1, -1], [-1, -1, -1]] -- Letra J
+[[-1, -1, -1, -1, -1, 1, -1], [-1, -1, 1]] -- Letra J, fuente 3
 
 Prediccion para
 #....#.
@@ -178,7 +182,7 @@ Prediccion para
 .#....#
 .#....#
 ######.
-[[-1, 1, -1, -1, -1, -1, -1], [1, -1, -1]] -- Letra B, fuente 1
+[[-1, 1, -1, -1, -1, -1, -1], [-1, -1, 1]] -- Letra B, fuente 3
 
 Prediccion para
 #####..
@@ -252,6 +256,9 @@ Prediccion para
 #######
 [[-1, -1, -1, -1, 1, -1, -1], [-1, 1, -1]] -- Letra E, fuente 2
 
+==============================
+====== DATOS DE PRUEBA =======
+==============================
 Prediccion para
 ...#...
 .......
@@ -262,7 +269,7 @@ Prediccion para
 .###.#.
 #......
 #...#.#
-[[1, -1, -1, -1, -1, -1, -1], [-1, 1, -1]] -- Letra A, fuente 2
+[[-1, -1, -1, -1, -1, -1, -1], [-1, 1, -1]] -- Fuente 2
 
 Prediccion para
 ######.
@@ -274,7 +281,7 @@ Prediccion para
 ##.....
 .#....#
 ######.
-[[-1, 1, -1, -1, -1, -1, -1], [-1, -1, 1]] -- Letra B, fuente 3
+[[-1, 1, 1, -1, -1, -1, -1], [-1, -1, 1]] -- No identificado.
 
 Prediccion para
 .####..
@@ -286,7 +293,7 @@ Prediccion para
 ......#
 #....#.
 .####..
-[[-1, -1, -1, 1, -1, -1, -1], [-1, 1, -1]] -- Letra D, fuente 2
+[[-1, -1, -1, -1, -1, -1, -1], [-1, 1, -1]] -- Fuente 2
 
 Prediccion para
 ##.####
@@ -310,7 +317,7 @@ Prediccion para
 .#....#
 .##..#.
 #####..
-[[-1, -1, -1, 1, -1, -1, -1], [-1, -1, 1]] -- Letra D, fuente 3
+[[-1, -1, -1, -1, -1, -1, -1], [-1, -1, 1]] -- Fuente 3
 
 Prediccion para
 ...#...
@@ -394,7 +401,7 @@ Prediccion para
 #..#...
 #...#..
 .......
-[[-1, -1, -1, -1, -1, -1, 1], [-1, 1, -1]] -- Letra K, fuente 2
+[[-1, -1, -1, -1, -1, -1, -1], [-1, 1, -1]] -- Fuente 2
 
 Prediccion para
 .##..#.
@@ -417,7 +424,7 @@ Prediccion para
 .#..##.
 .##..#.
 ##...##
-[[-1, -1, -1, -1, -1, -1, 1], [1, -1, -1]] -- Letra K, fuente 1
+[[-1, -1, -1, -1, -1, -1, 1], [-1, -1, -1]] -- Letra K
 
 Prediccion para
 ######.
@@ -453,7 +460,7 @@ Prediccion para
 .#.#.#.
 .#...#.
 #.#.#.#
-[[1, -1, -1, -1, -1, -1, -1], [1, -1, -1]] -- Letra A, fuente 1
+[[1, -1, -1, -1, -1, -1, -1], [1, 1, -1]] -- No identificado.
 
 Prediccion para
 ..###..
@@ -489,7 +496,7 @@ Prediccion para
 #......
 .#..#.#
 ..####.
-[[-1, -1, -1, -1, -1, -1, -1], [1, -1, -1]] -- Fuente 1
+[[-1, -1, 1, -1, -1, -1, -1], [1, -1, -1]] -- Letra C, fuente 1
 
 Prediccion para
 .######
@@ -503,7 +510,7 @@ Prediccion para
 .######
 [[-1, -1, -1, -1, 1, -1, -1], [-1, 1, -1]] -- Letra E, fuente 2
 
-Fuente y letra identificada: 15
-Solo letra identificada: 2
-Solo fuente identificada: 4
-No identificada: 0
+Fuente y letra identificada: 9
+Solo letra identificada: 3
+Solo fuente identificada: 7
+No identificada: 2

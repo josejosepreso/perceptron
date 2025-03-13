@@ -8,12 +8,12 @@ pub mod perceptron {
     
     impl Perceptron {
 	pub fn new() -> Self {
-            return Self {
+            Self {
 		bias: Vec::new(),
 		learning_rate: rand::random(),
 		threshold: 0.0,
 		weights: Vec::new()
-            };
+            }
 	}
 	
 	fn activate(&self, x: f64) -> i16 {
@@ -42,12 +42,14 @@ pub mod perceptron {
 	}
 	
 	pub fn train(&mut self, training_input: Vec<Vec<i16>>, targets: Vec<Vec<i16>>) -> usize {
-	    self.bias = targets[0]
+	    self.bias =
+		targets[0]
 		.iter()
 		.map(|_| 0.0)
 		.collect::<Vec<_>>();
 	    
-	    self.weights = self.bias
+	    self.weights =
+		self.bias
 		.iter()
 		.map(|_| {
 		    training_input[0]

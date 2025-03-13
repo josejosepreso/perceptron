@@ -36,10 +36,10 @@ fn prediction_message(prediction: &Vec<Vec<i16>>) -> String {
 fn print_result(prediction: &Vec<Vec<i16>>, index: usize) -> () {
     println!("{}\n",
 	     match index {
-		 3 => String::from("No identificado."),
+		 3 => format!("{:?} -- No identificado.", prediction),
 		 _ => prediction_message(prediction)
 	     }
-    );
+    )
 }
 
 fn check_result(letter: i16, font: i16) -> usize {
@@ -118,8 +118,11 @@ fn main() {
     let mut result: Vec<i16>;
     let mut prediction: Vec<Vec<i16>>;
     let mut index: usize;
-    
-    // TRAINING INPUTS
+
+    println!();
+    println!("==============================");
+    println!("=== DATOS DE ENTRENAMIENTO ===");
+    println!("==============================");
     for (a, _) in csv_s {
 	println!("Prediccion para");
 	print(&a);
@@ -138,7 +141,9 @@ fn main() {
 	print_result(&prediction, index);
     }
 
-    // TEST INPUTS
+    println!("==============================");
+    println!("====== DATOS DE PRUEBA =======");
+    println!("==============================");
     let mut letters: Vec<Vec<Vec<i16>>> = Vec::new();
 
     for path in std::fs::read_dir("src/test").unwrap() {
